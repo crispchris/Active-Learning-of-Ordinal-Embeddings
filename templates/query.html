@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Query Page</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+<div class="row" style="height:50%">
+  <!-- Center Target -->
+    <div class="col"style="text-align: center;">
+      <h1>Anchor</h1>
+      <div style="text-align: center;">What is the most similar scene to the anchor? You may skip this sample if you want to.</div>
+      <div style="text-align: center;"><a href={{ url_for('query', username=username, query_id=(query_id * 100 + query_id + 1) % 1005) }}>Skip this query.</a> You've answered {{ n_replies }} queries already.</div>
+    <img class="center-block" src={{ base_url + 'scene_' + plot_head + '.png' }}  width="320" height="200"></img>
+    </div>
+</div>
+<br/>
+
+<div id="log"></div>
+<div class="row">
+  {% for plot in plots_body %}
+  <div class="col-sm-4">
+      <img class="center-block" src={{ base_url + 'scene_' + plot + '.png' }}  onclick="submit({{ plot }})"  width="320" height="200"></img>
+  </div>
+  {% endfor %}
+    <script>
+      var submit = function(plot) {
+          var plots_body = {{ plots_body|tojson }}
+          plots_body.splice(plots_body.indexOf(String(plot)), 1)
+          //document.getElementById('log').innerHTML += '<br> some text';
+          var reply = new Object();
+          reply.head = {{ plot_head |tojson }}
+          reply.best = plot
+          reply.rest = plots_body
+          var replyJSON = JSON.stringify(reply);
+          var reply_url = {{ url_for('reply', username=username, query_id=query_id, _external=True)|tojson }}
+          window.location.assign(reply_url + encodeURIComponent(replyJSON))
+      }
+    </script>
+</div>
+<br/>
+</body>
+</html>

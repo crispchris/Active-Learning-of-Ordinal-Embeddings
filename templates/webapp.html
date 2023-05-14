@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <title>Annotation Tool</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        .message {
+            padding: 10px;
+            margin: 5px;
+            background-color: #f3f3f3
+        }
+        nav a {
+            color: #d64161;
+            font-size: 3em;
+            margin-left: 50px;
+            text-decoration: none;
+        }
+
+        .alert {
+            padding: 20px;
+            margin: 5px;
+            color: #970020;
+            background-color: #ffd5de;
+        }
+     .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    </style>
+</head>
+<body>
+<div style="text-align: center;">
+    <h1>Introduction</h1>
+    This data collection aims to learn what you perceive as similarity for football scenes.
+    <br><br>
+    <h3>How does the data look like?</h3>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-sm-8" style="text-align: left;">
+            <ul>
+                <li>You will see plots of short scenes (5s) with two teams and a ball.</li>
+                <li>Blue team (left) is in possession of the ball. Team green (right) is the opponent.</li>
+                <li>The game's direction is always from left to right, i.e., the team in ball possession plays from left to right</li>
+                <li>The trajectories come from object tracking on video data, that you will not see again later. </li>
+            </ul>
+        </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-sm-3" style="text-align: center;">
+              <br>
+             <img class="center-block" src={{ base_url + 'example_' ~ 0 ~ '.png' }}   width="320" height="200" ></img>
+              <br><br>
+          </div>
+          <div class="col-sm-3">
+            <video width="320" height="240" poster="http://jimpunk.net/Loading/wp-content/uploads/loading1.gif" controls autoplay loop>
+                  <source src={{ base_url ~ 0 ~ '.mp4' }} type="video/mp4">
+              </video>
+          </div>
+          <div class="col-sm-3" style="text-align: center;">
+              <br>
+             <img class="center-block" src={{ base_url + 'trajectory_' ~ 0 ~ '.png' }}   width="160" height="100" ></img>
+              <br>Trajectories move towards the marker.
+              <br><br>
+          </div>
+      </div>
+    </div>
+
+    <h3>Your Task</h3>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-sm-8" style="text-align: left;">
+            You will compare an <b>ANCHOR</b> scene with other scenes.<br>
+            The anchor has a yellow background:
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-sm-3" style="text-align: center; background-color:#ffffd0;">
+              <br>
+             <img class="center-block" src={{ base_url + 'scene_' ~ 0 ~ '.png' }}   width="320" height="200" ></img>
+              <br><br>
+          </div>
+      </div>
+    </div>
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-sm-8" style="text-align: left;">
+            <br>You can decide which other scene looks <i>the most similar</i> and click on it. <br>
+
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+          <div class="col-sm-3">
+             <img class="center-block" src={{ base_url + 'plots/scene_' ~ 100 ~ '.png' }}   width="320" height="200"></img>
+          </div>
+          <div class="col-sm-3">
+              <img class="center-block" src={{ base_url + 'plots/scene_' ~ 97 ~ '.png' }}   width="320" height="200" ></img>
+          </div>
+      </div>
+          <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-sm-8" style="text-align: left;">
+            <br>If none looks similar to you, please click the large green button:
+        </div>
+      </div>
+    </div>
+    </div>
+        <div class="container-fluid">
+      <div class="row justify-content-center">
+           <div class="col-sm-3">
+             <a href="#" class="button">
+                No scene is similar.
+            </a>
+          </div>
+      </div>
+    </div>
+<br><br>
+    <div style="text-align: center; background: lightgrey">
+        <h1>Example</h1>
+        <div class="row" style="height:50%">
+        <!-- Center Target -->
+        <div class="col-sm-4"></div>
+          <div class="col-sm-4" style="text-align: center; background-color:#ffffd0;">
+            <br>
+            Which sample is the most similar to the anchor?<br> <p style="color:red">This is the anchor.</p>
+            <img class="center-block" src={{ base_url +  'plots/scene_0.png' }}  width="320" height="200" style="padding: 5px 5px"></img>
+          </div>
+        <div class="col-sm-4"></div>
+        <br>
+      </div>
+      <br>
+            <p style="color:red">These are the other scenes that you can choose a <i>most similar scene</i> from.</p>
+      <br>
+      <div id="log1"></div>
+        <div class="row">
+          <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_100.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_200.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_300.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_400.png' }} width="320" height="200"></img></div>
+        </div>
+      <br/>
+      <div class="row">
+          <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_500.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_600.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_700.png' }} width="320" height="200"></img></div>
+            <div class="col-sm-3"><img class="center-block" src={{ base_url + 'plots/scene_800.png' }} width="320" height="200"></img></div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+              <div class="center-block" style="text-align: center;">
+                <br>
+                  <p style="color:red">If there is none that is similar to you, please press this button:</p>
+                <a href="#" class="button">
+                    No scene is similar.
+                </a>
+              </div>
+            </div>
+      </div>
+    </div>
+
+     <h1>Start with a warm-up</h1>
+    You'll start with a warm-up to learn the tool. <br>
+    After that we'll record your replies.
+    <form method="post">
+        <input type="text" name="username"
+               placeholder="enter participant handle"
+               value="{{ request.form['username'] }}"></input>
+
+        <button type="submit">Start!</button>
+    </form>
+    <div class="content">
+        {% for message in get_flashed_messages() %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% block content %} {% endblock %}
+    </div>
+    <br>
+    <br>
+</div>
+</body>
+</html>

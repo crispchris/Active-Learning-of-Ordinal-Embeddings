@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Query Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+     .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="row" style="height:50%">
+    <!-- Center Target -->
+    <div class="col-sm-4"></div>
+      <div class="col-sm-4" style="text-align: center; background-color:#ffffd0;">
+        <br>
+        Which sample is the most similar to the anchor?<br>
+        <p style="color:red"><i>warm-up</i></p>
+        <img class="center-block" src={{ base_url + 'plots/scene_' + plot_head + '.png' }}  width="320" height="200" style="padding: 5px 5px"></img>
+      </div>
+    <div class="col-sm-4"></div>
+    <br>
+  </div>
+  <br>
+  <br>
+  <div id="log1"></div>
+    <div class="row">
+      {% for plot in plots_body %}
+        {% if loop.index <= 4 %}
+          <div class="col-sm-3">
+              <img class="center-block" src={{ base_url + 'plots/scene_' + plot + '.png' }}  onclick="submit({{ plot }})"  width="320" height="200"></img>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  <br/>
+  <div class="row">
+    {% for plot in plots_body %}
+      {% if loop.index > 4 %}
+        <div class="col-sm-3">
+            <img class="center-block" src={{ base_url + 'plots/scene_' + plot + '.png' }}  onclick="submit({{ plot }})"  width="320" height="200"></img>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  <br/>
+  <div class="row">
+    <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+          <div class="center-block" style="text-align: center;">
+            <br>
+            <!--Previous implementation skipped to next sample: <a href={{ url_for('query', username=username, query_id=(query_id * 100 + query_id + 1) % 1005) }} class="button">-->
+            <!-- Improved implementation stores skip just like a valid annotation. -->
+            <a href="javascript:skip();" class="button">
+                No scene is similar.
+            </a>
+            <br><br>
+          </div>
+        </div>
+  </div>
+  <br/>
+  <script>
+    var skip = function(plot) {
+        var plots_body = {{ plots_body|tojson }}
+        var reply = new Object();
+        reply.qtype = {{ query_type|tojson }}
+        reply.head = {{ plot_head |tojson }}
+        reply.best = -1
+        reply.rest = plots_body
+        var replyJSON = JSON.stringify(reply);
+        var reply_url = {{ url_for('warmup_reply', username=username, query_id=query_id, _external=True)|tojson }}
+        window.location.assign(reply_url + encodeURIComponent(replyJSON))
+    }
+    var submit = function(plot) {
+        var plots_body = {{ plots_body|tojson }}
+        plots_body.splice(plots_body.indexOf(String(plot)), 1)
+        var reply = new Object();
+        reply.qtype = {{ query_type|tojson }}
+        reply.head = {{ plot_head |tojson }}
+        reply.best = plot
+        reply.rest = plots_body
+        var replyJSON = JSON.stringify(reply);
+        var reply_url = {{ url_for('warmup_reply', username=username, query_id=query_id, _external=True)|tojson }}
+        window.location.assign(reply_url + encodeURIComponent(replyJSON))
+    }
+  </script>
+
+</body>
+</html>
